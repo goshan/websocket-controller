@@ -1,12 +1,6 @@
-class SocketParser
-
-	SOCKET_ROUTES = {
-		:room => ["enter", "leave", "start_game"], 
-		:game => ["enter_game", "get_players", "assign_heroes", "check_hero", "deploy_hero", "ready", "move", "standby", "attack"]
-	}
-
-	class << self
-		def parse_message(msg, ws)
+module WebSocket
+	class Parser
+		def self.parse_message(msg, ws)
 			# parse json
 			begin
 				json = JSON.parse msg, {:symbolize_names => true}
@@ -23,21 +17,27 @@ class SocketParser
 				return
 			end
 			engin = json[:engin].to_sym
+			action = json[:action]
 
 			if json[:engin] == "socket" && json[:action] == "register"
 				# register user with ws
-				SocketManager.bind_socket json[:user_id].to_i, ws
-			elsif SOCKET_ROUTES.keys.include?(engin) && SOCKET_ROUTES[engin].include?(json[:action])
+				WebSocket::Manager.bind_socket json[:user_id].to_i, ws
+			elsif WebSocket::Routes.include_engin?(engin) && WebSocket::Routes.include_action?(engin, action)
 				# run engin controller
-				json[:user_id] = SocketManager.user_by_socket ws
-				if "#{json[:engin].capitalize}WSController".constantize.send("before_filter", json)
-					"#{json[:engin].capitalize}WSController".constantize.send(json[:action], json)
+				json[:user_id] = WebSocket::Manager.user_by_socket ws
+				controller = "#{json[:engin].capitalize}Controller".constantize.send('new')
+				if controller.before_filter(json)
+					controller.send(json[:action], json)
 				end
 			else
 				# 404 error
 				response = JSON.generate({:status => 'error', :error => "unsupport engin or action"})
 				ws.send(response)
 			end
+		end
+
+		def self.close_socket(ws)
+			WebSocket::Manager.unbind_socket ws
 		end
 	end
 end

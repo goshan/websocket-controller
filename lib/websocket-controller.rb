@@ -1,13 +1,9 @@
-require "websocket/controller/version"
+require "websocket/version"
+require "websocket/routes"
+require "websocket/manager"
+require "websocket/parser"
+require "websocket/controller"
 
-module WebsocketController
-
-	WebscoketController::Routes.init
-
-	def routes
-		WebscoketController::Routes.setup do
-			yield
-		end
-	end
-
+module WebSocket
+	Routes.init
 end
