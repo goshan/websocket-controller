@@ -25,9 +25,9 @@ module WebSocket
 			elsif WebSocket::Routes.include_engin?(engin) && WebSocket::Routes.include_action?(engin, action)
 				# run engin controller
 				json[:user_id] = WebSocket::Manager.user_by_socket ws
-				controller = "#{json[:engin].capitalize}Controller".constantize.send('new')
-				if controller.before_filter(json)
-					controller.send(json[:action], json)
+				controller = "#{json[:engin].capitalize}Controller".constantize.send('new', json)
+				if controller.before_filter
+					controller.send(json[:action])
 				end
 			else
 				# 404 error

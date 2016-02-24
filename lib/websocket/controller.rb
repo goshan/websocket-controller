@@ -1,11 +1,22 @@
 module WebSocket
 	class Controller
-		def before_filter(params)
-			return true
+		attr_accessor :params
+
+		def initialize(params)
+			@params = params
 		end
 
-		def send_message(json, user_id)
+		def before_filter
+			return true
+		end
+		
+		def current_user
+			User.find_by_id @params[:user_id]
+		end
+
+		def send_message(json, user_id=nil)
 			msg = JSON.generate json
+			user_id = @params[:user_id] unless user_id
 			ws = WebSocket::Manager.socket_by_user user_id
 			if ws
 				ws.send msg
