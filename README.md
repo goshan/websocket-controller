@@ -116,7 +116,7 @@ and stop with `Ctrl-C`
 make a connection to web socket server with code below
 
 ```javascript
-socket = new WebSocket(url);
+socket = new WebSocket("http://x.x.x.x:4040");
 
 socket.onopen = function(event){
 	// important! make sure register to bind user_id with this socket
@@ -140,9 +140,9 @@ socket.onclose = function(event) {
 And send a message with format
 
 ```javascript
-	var json = {engin: "controller", action: "action", other_params: params}
-	var request = JSON.stringify(json);
-	socket.send(request);
+var json = {engin: "controller", action: "action", other_params: params}
+var request = JSON.stringify(json);
+socket.send(request);
 ```
 
 ## License
