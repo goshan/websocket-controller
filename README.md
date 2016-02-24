@@ -1,8 +1,6 @@
 # Websocket::Controller
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/websocket/controller`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+a rails controller class make you can write web-socket code
 
 ## Installation
 
@@ -14,7 +12,7 @@ gem 'websocket-controller'
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
@@ -22,18 +20,119 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Controller
 
-## Development
+Make a controller file and write down the code below, and then you can make any action just like rails controller
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```ruby
+class SomeController < WebSocket::Controller
+	# you can write some action method here
+end
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+For websoket routes, make a new file in `config/initializers/websocket_routes.rb`.
+And declare routes schema like below
 
-## Contributing
+```ruby
+WebSocket::Routes.setup do
+	{
+		:some => [
+			"enter", 
+			"leave", 
+			"start"
+		],
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/websocket-controller.
+		:test => [
+			"check", 
+			"dump"
+		]
+	}
+end
+```
 
+And then wirte the action method in the controller with the same name like
+
+```ruby
+class SomeController < WebSocket::Controller
+	def enter
+		# action logic
+	end
+
+	def leave
+		# action logic
+	end
+
+	def start
+		# action logic
+	end
+end
+
+class TestController < WebSocket::Controller
+	def check
+		# action logic
+	end
+
+	def dump
+		# action logic
+	end
+end
+```
+
+> Be careful, web socket will not access action without declaring routes
+
+If you want to get the parameters from client, just do this in action
+
+```ruby
+param1 = params[:param1]
+param2 = params[:param2]
+```
+
+`params[:user_id]` was created by default with web socket client signature
+And also you can use `current_user` directly to get current client user. This feature is require you to migrate a `User` table and model
+
+### Task
+
+start web socket server with command
+
+```shell
+$ be rake socket:start
+```
+
+and stop with `Ctrl-C`
+
+### JS
+
+make a connection to web socket server with code below
+
+```javascript
+socket = new WebSocket(url);
+
+socket.onopen = function(event){
+	// important! make sure register to bind user_id with this socket
+	var json = {engin: "socket", action: "register", user_id: user_id}
+	var request = JSON.stringify(json);
+	socket.send(request);
+};
+	
+socket.onmessage = function(event) { 
+	// get web socket server response
+	var res = $.parseJSON(event["data"]);
+	console.log(res);
+}; 
+
+socket.onclose = function(event) { 
+	// when socket was closed
+	console.log('Client notified socket has closed',event); 
+};
+```
+
+And send a message with format
+
+```javascript
+	var json = {engin: "controller", action: "action", other_params: params}
+	var request = JSON.stringify(json);
+	socket.send(request);
+```
 
 ## License
 
