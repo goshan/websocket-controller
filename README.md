@@ -90,13 +90,24 @@ param2 = params[:param2]
 `params[:user_id]` was created by default with web socket client signature
 And also you can use `current_user` directly to get current client user. This feature is require you to migrate a `User` table and model
 
+As response to client, you can use the following three methods
+
+```ruby
+# response message to current_user
+send_message {:key1 => val1, :key2 => val2}
+
+# response message to spetified user
+send_message({:key => val}, user.id)
+
+# response message to all active user
+broadcast_message({:key => val})
+```
+
 ### Task
 
 start web socket server with command
 
-```shell
-$ be rake socket:start
-```
+    $ be rake socket:start
 
 and stop with `Ctrl-C`
 
