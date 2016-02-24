@@ -1,3 +1,6 @@
+require "eventmachine"
+require "em-websocket"
+
 namespace :socket do
 	desc "start web socket server"
 	task :start => :environment do
