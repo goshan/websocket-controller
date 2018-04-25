@@ -26,7 +26,7 @@ Make a controller file and write down the code below, and then you can make any 
 
 ```ruby
 class SomeController < WebSocket::Controller
-	# you can write some action method here
+  # you can write some action method here
 end
 ```
 
@@ -35,18 +35,18 @@ And declare routes schema like below
 
 ```ruby
 WebSocket::Routes.setup do
-	{
-		:some => [
-			"enter", 
-			"leave", 
-			"start"
-		],
+  {
+    :some => [
+      "enter", 
+      "leave", 
+      "start"
+    ],
 
-		:test => [
-			"check", 
-			"dump"
-		]
-	}
+    :test => [
+      "check", 
+      "dump"
+    ]
+  }
 end
 ```
 
@@ -54,27 +54,27 @@ And then wirte the action method in the controller with the same name like
 
 ```ruby
 class SomeController < WebSocket::Controller
-	def enter
-		# action logic
-	end
+  def enter
+    # action logic
+  end
 
-	def leave
-		# action logic
-	end
+  def leave
+    # action logic
+  end
 
-	def start
-		# action logic
-	end
+  def start
+    # action logic
+  end
 end
 
 class TestController < WebSocket::Controller
-	def check
-		# action logic
-	end
+  def check
+    # action logic
+  end
 
-	def dump
-		# action logic
-	end
+  def dump
+    # action logic
+  end
 end
 ```
 
@@ -119,21 +119,21 @@ make a connection to web socket server with code below
 socket = new WebSocket("http://x.x.x.x:4040");
 
 socket.onopen = function(event){
-	// important! make sure register to bind user_id with this socket
-	var json = {engin: "socket", action: "register", user_id: user_id}
-	var request = JSON.stringify(json);
-	socket.send(request);
+  // important! make sure register to bind user_id with this socket
+  var json = {engin: "socket", action: "register", user_id: user_id}
+  var request = JSON.stringify(json);
+  socket.send(request);
 };
-	
+  
 socket.onmessage = function(event) { 
-	// get web socket server response
-	var res = $.parseJSON(event["data"]);
-	console.log(res);
+  // get web socket server response
+  var res = $.parseJSON(event["data"]);
+  console.log(res);
 }; 
 
 socket.onclose = function(event) { 
-	// when socket was closed
-	console.log('Client notified socket has closed',event); 
+  // when socket was closed
+  console.log('Client notified socket has closed',event); 
 };
 ```
 
